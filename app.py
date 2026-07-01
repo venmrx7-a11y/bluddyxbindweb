@@ -6,17 +6,18 @@ import requests
 import json
 
 app = Flask(__name__)
-app.secret_key = "error_x_secret_2026"
+app.secret_key = "error_x_secretx_2026"
 
+# Render pe SQLite ke liye path fix
 basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, "error_x.db")
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-BOT_TOKEN = "8290702872:AAF0Kymg0pjJNZNzpyzmS2qTwmiPNNDvGR0"
-ACCESS_KEY = "ERROR-X-OWNER"
-ADMIN_KEY = "ERROR-X-ADMIN"
+BOT_TOKEN = "8942532097:AAFWVLTYYgOnp-1aIUdOFYql1bHXhN4sey4"
+ACCESS_KEY = "ERROR-X-OWNERX"
+ADMIN_KEY = "ERROR-X-ADMINX"
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -56,9 +57,9 @@ def call_api(url, params):
         try:
             data = json.loads(rsp.text)
             if data.get("data", {}).get("error"):
-                return False, f"API Error: {data['data']['error']}"
+                return False, f"Error: {data['data']['error']}"
             if data.get("error"):
-                return False, f"API Error: {data['error']}"
+                return False, f"Error: {data['error']}"
             return True, data
         except:
             return rsp.status_code == 200, rsp.text[:200]
@@ -126,7 +127,7 @@ def login():
     db.session.add(user)
     db.session.commit()
     session['user_id'] = user.id
-    send_to_telegram(f"🔔 NEW LOGIN\nID: {user.display_id}\nIP: {ip}")
+    send_to_telegram(f"NEW LOGIN\\nID: {user.display_id}\\nIP: {ip}")
     return redirect('/dashboard')
 
 @app.route('/dashboard')
@@ -227,7 +228,6 @@ def check_bind_page():
 <button type="submit" class="btn">CHECK</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""", result=result, error=error)
 
-# ==================== CHANGE WITH OTP (3 STEP) ====================
 @app.route('/change-otp', methods=['GET', 'POST'])
 def change_otp():
     if 'user_id' not in session:
@@ -248,10 +248,10 @@ def change_otp():
                     return render_template_string(f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Step 2</title>{CSS}</head>
 <body><div style="width:100%;max-width:500px;padding:20px"><div class="card">
-<h1>STEP 2 - VERIFY CURRENT EMAIL</h1>
-<p style="color:#00ff0088;text-align:center;margin-bottom:20px">✓ OTP sent to {ce}</p>
+<h1>STEP 2 - VERIFY CURRENT</h1>
+<p style="color:#00ff0088;text-align:center;margin-bottom:20px">OTP sent to {ce}</p>
 <form method="POST">
-<div class="input-group"><label>OTP (CURRENT EMAIL)</label><input type="text" name="otp1" required></div>
+<div class="input-group"><label>OTP (CURRENT)</label><input type="text" name="otp1" required></div>
 <div class="input-group"><label>NEW EMAIL</label><input type="email" name="new_email" required></div>
 <input type="hidden" name="step" value="2">
 <input type="hidden" name="access_token" value=\"""" + at + """\">
@@ -278,10 +278,10 @@ def change_otp():
                         return render_template_string(f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Step 3</title>{CSS}</head>
 <body><div style="width:100%;max-width:500px;padding:20px"><div class="card">
-<h1>STEP 3 - VERIFY NEW EMAIL</h1>
-<p style="color:#00ff0088;text-align:center;margin-bottom:20px">✓ OTP sent to {ne}</p>
+<h1>STEP 3 - VERIFY NEW</h1>
+<p style="color:#00ff0088;text-align:center;margin-bottom:20px">OTP sent to {ne}</p>
 <form method="POST">
-<div class="input-group"><label>OTP (NEW EMAIL)</label><input type="text" name="otp2" required></div>
+<div class="input-group"><label>OTP (NEW)</label><input type="text" name="otp2" required></div>
 <input type="hidden" name="step" value="3">
 <input type="hidden" name="access_token" value=\"""" + at + """\">
 <input type="hidden" name="current_email" value=\"""" + ce + """\">
@@ -306,8 +306,8 @@ def change_otp():
                     verifier = d_v.get('verifier_token') or d_v.get('data',{}).get('verifier_token','')
                     ok_c, _ = call_api("https://chngeforgotcrownx72.vercel.app/change", {'access_token': at, 'new_email': ne, 'identity_token': identity, 'verifier_token': verifier})
                     if ok_c:
-                        success = f"✅ Email changed to {ne}!"
-                        send_to_telegram(f"✅ EMAIL CHANGED (OTP)\nNew: {ne}")
+                        success = f"Email changed to {ne}!"
+                        send_to_telegram(f"EMAIL CHANGED (OTP)\\nNew: {ne}")
                     else:
                         error = "Change failed!"
     
@@ -323,7 +323,6 @@ def change_otp():
 <button type="submit" class="btn">SEND OTP TO CURRENT</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""", error=error, success=success)
 
-# ==================== CHANGE WITH SEC ====================
 @app.route('/change-sec', methods=['GET', 'POST'])
 def change_sec():
     if 'user_id' not in session:
@@ -360,8 +359,8 @@ def change_sec():
                     verifier = d_v.get('verifier_token') or d_v.get('data',{}).get('verifier_token','')
                     ok_c, _ = call_api("https://chngemailcode48.vercel.app/create_rebind", {'access_token': at, 'email': ne, 'identity_token': identity, 'verifier_token': verifier})
                     if ok_c:
-                        success = f"✅ Email changed to {ne}!"
-                        send_to_telegram(f"✅ EMAIL CHANGED (SEC)\nNew: {ne}")
+                        success = f"Email changed to {ne}!"
+                        send_to_telegram(f"EMAIL CHANGED (SEC)\\nNew: {ne}")
                     else:
                         error = "Change failed!"; show_otp = True; hd = request.form
     
@@ -396,7 +395,6 @@ def change_sec():
 <button type="submit" class="btn">SEND OTP</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""", error=error, success=success)
 
-# ==================== UNBIND ====================
 @app.route('/unbind', methods=['GET', 'POST'])
 def unbind():
     if 'user_id' not in session:
@@ -407,7 +405,7 @@ def unbind():
         if sc:
             ok, _ = call_api("https://crownxnewkey10010.vercel.app/securityunbind", {'access_token': at, 'security_code': sc})
             if ok:
-                send_to_telegram("🔓 UNBIND (SEC)")
+                send_to_telegram("UNBIND (SEC)")
                 return render_template_string(f"""<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Done</title>{CSS}</head>
 <body><div style="width:100%;max-width:500px;padding:20px"><div class="card"><h1>DONE</h1><div class="success">15 Days Timer Started!</div><a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""")
         elif ce and otp:
@@ -417,7 +415,7 @@ def unbind():
                 identity = d.get('identity_token') or d.get('data',{}).get('identity_token','')
                 ok2, _ = call_api("https://crownxforgotremove23.vercel.app/forgotunbind", {'access_token': at, 'identity_token': identity})
                 if ok2:
-                    send_to_telegram("🔓 UNBIND (OTP)")
+                    send_to_telegram("UNBIND (OTP)")
                     return render_template_string(f"""<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Done</title>{CSS}</head>
 <body><div style="width:100%;max-width:500px;padding:20px"><div class="card"><h1>DONE</h1><div class="success">15 Days Timer Started!</div><a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""")
     return render_template_string(f"""<!DOCTYPE html>
@@ -431,17 +429,15 @@ def unbind():
 <button type="submit" class="btn">UNBIND</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""")
 
-# ==================== REVOKE ====================
-@app.route('/revoke', methods=['GET', 'POST'])
+@app.route('/revoke', methods=['GET','POST'])
 def revoke():
-    if 'user_id' not in session:
-        return redirect('/')
+    if 'user_id' not in session: return redirect('/')
     error=None;success=None
     if request.method=='POST':
         at=request.form.get('access_token')
         if at:
             ok,msg=call_api("https://crownxrevoker73.vercel.app/revoke",{'access_token':at})
-            if ok: success="Token revoked!"; send_to_telegram("🔑 TOKEN REVOKED")
+            if ok: success="Token revoked!"; send_to_telegram("TOKEN REVOKED")
             else: error=msg
     return render_template_string(f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Revoke</title>{CSS}</head>
@@ -453,8 +449,7 @@ def revoke():
 <button type="submit" class="btn">REVOKE</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""", error=error, success=success)
 
-# ==================== CANCEL ====================
-@app.route('/cancel', methods=['GET', 'POST'])
+@app.route('/cancel', methods=['GET','POST'])
 def cancel():
     if 'user_id' not in session: return redirect('/')
     error=None;success=None
@@ -462,7 +457,7 @@ def cancel():
         at=request.form.get('access_token')
         if at:
             ok,msg=call_api("https://bindcnclcrownx34.vercel.app/cancelbind",{'access_token':at})
-            if ok: success="Cancelled!"; send_to_telegram("❌ BIND CANCELLED")
+            if ok: success="Cancelled!"; send_to_telegram("BIND CANCELLED")
             else: error=msg
     return render_template_string(f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Cancel</title>{CSS}</head>
@@ -474,7 +469,6 @@ def cancel():
 <button type="submit" class="btn">CANCEL</button></form>
 <a href="/dashboard" class="back-link">← BACK</a></div></div></body></html>""", error=error, success=success)
 
-# ==================== ADMIN ====================
 @app.route('/admin-login', methods=['GET','POST'])
 def admin_login():
     if request.method=='POST':
